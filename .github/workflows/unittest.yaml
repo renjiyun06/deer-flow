@@ -22,8 +22,16 @@ jobs:
         uv venv --python 3.12
         uv pip install -e ".[dev]"
         uv pip install -e ".[test]"
+        uv pip install codecov
 
-    - name: Run test cases
+    - name: Run test cases with coverage
       run: |
         source .venv/bin/activate
-        TAVILY_API_KEY=mock-key make test
+        TAVILY_API_KEY=mock-key make coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
